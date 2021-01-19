@@ -58,7 +58,6 @@ def main():
     bearer_token = auth()
     headers = create_headers(bearer_token)
     tweet_data = []
-    user_data = []
     next_token = None
     has_next = True
     while has_next:
