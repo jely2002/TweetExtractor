@@ -73,7 +73,7 @@ def main():
         if next_token is None:
             has_next = False
         print("Waiting for ratelimit...")
-        sleep(10)
+        sleep(5)
     with open('output.csv', mode='w', newline='', encoding='utf-8') as output:
         fieldnames = ['id', 'tekst', 'accountnaam', 'timestamp', 'STAD_naam']
         output_writer = csv.DictWriter(output, fieldnames=fieldnames)
