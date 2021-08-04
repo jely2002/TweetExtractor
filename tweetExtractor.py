@@ -62,7 +62,7 @@ def main(query):
     has_next = True
     while has_next:
         tweet_response = connect_to_endpoint(create_tweets_url(next_token, query), headers)
-        print(tweet_response[0]["meta"]["result_count"])
+        print("Got " + tweet_response[0]["meta"]["result_count"] + " results")
         for tweet in tweet_response[0]["data"]:
             tweet_data.append({"id": tweet["id"], "tekst": tweet["text"], "accountnaam": tweet['author_id'], "timestamp": tweet["created_at"], "STAD_naam": query})
         for user in tweet_response[0]["includes"]["users"]:
