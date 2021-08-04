@@ -1,15 +1,15 @@
 import csv
+import sys
 from time import sleep
 
 import requests
-query = "Maastricht"
 
 def auth():
     print("Enter Twitter API Bearer token:")
     return input()
 
 
-def create_tweets_url(next_token):
+def create_tweets_url(next_token, query):
     max_results = "100"
     expansions = "author_id"
     tweet_fields = "public_metrics,created_at"
@@ -54,14 +54,14 @@ def connect_to_endpoint(url, headers):
     return response.json(), None
 
 
-def main():
+def main(query):
     bearer_token = auth()
     headers = create_headers(bearer_token)
     tweet_data = []
     next_token = None
     has_next = True
     while has_next:
-        tweet_response = connect_to_endpoint(create_tweets_url(next_token), headers)
+        tweet_response = connect_to_endpoint(create_tweets_url(next_token, query), headers)
         print(tweet_response[0]["meta"]["result_count"])
         for tweet in tweet_response[0]["data"]:
             tweet_data.append({"id": tweet["id"], "tekst": tweet["text"], "accountnaam": tweet['author_id'], "timestamp": tweet["created_at"], "STAD_naam": query})
@@ -84,4 +84,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) > 1:
+        query = ' '.join(sys.argv[1:])
+        main(query)
+    else:
+        print("No search query was provided. Use like: tweetExtractor.py <query>")
