@@ -64,23 +64,29 @@ def main(query):
         tweet_response = connect_to_endpoint(create_tweets_url(next_token, query), headers)
         print("Got " + tweet_response[0]["meta"]["result_count"] + " results")
         for tweet in tweet_response[0]["data"]:
-            tweet_data.append({"id": tweet["id"], "tekst": tweet["text"], "accountnaam": tweet['author_id'], "timestamp": tweet["created_at"], "STAD_naam": query})
+            tweet_data.append({
+                "id": tweet["id"], 
+                "text": tweet["text"],
+                "username": tweet['author_id'],
+                "timestamp": tweet["created_at"],
+                "query": query
+            })
         for user in tweet_response[0]["includes"]["users"]:
             for tweet in tweet_data:
-                if tweet["accountnaam"] == user["id"]:
-                    tweet["accountnaam"] = user["username"]
+                if tweet["username"] == user["id"]:
+                    tweet["username"] = user["username"]
         next_token = tweet_response[1]
         if next_token is None:
             has_next = False
         print("Waiting for ratelimit...")
         sleep(5)
     with open('output.csv', mode='w', newline='', encoding='utf-8') as output:
-        fieldnames = ['id', 'tekst', 'accountnaam', 'timestamp', 'STAD_naam']
+        fieldnames = ['id', 'text', 'username', 'timestamp', 'query']
         output_writer = csv.DictWriter(output, fieldnames=fieldnames)
         output_writer.writeheader()
         for row in tweet_data:
             output_writer.writerow(row)
-            print(row)
+        print("Extraction finished. Results written to: output.csv")    
 
 
 if __name__ == "__main__":
